@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<head>
+  <script src="build/tnt.ensembl.js"></script>
+</head>
+
+<body>
+  <script>
+    var eRest = tnt_ensembl();
+    var xrefUrl = eRest.url.xref({species:"human", name:"BRCA2"});
+    eRest.call({url : xrefUrl,
+    success : function (resp) {
+       console.log(resp);
+    }});
+  </script>
+</body>
