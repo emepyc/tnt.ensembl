@@ -150,6 +150,7 @@ eRest.call ( url     : eRest.url.homologues ({ id : "ENSG00000139618" }),
 	    @param {object} obj - An object literal with the following fields:<br />
 <ul>
 <li>id : The name of the gene</li>
+<li>expand : if transcripts should be included in the response (default to 0)</li>
 </ul>
             @returns {string} - The url to query the Ensembl REST server. For an example of output of these urls see the {@link http://beta.rest.ensembl.org/lookup/ENSG00000139618.json?format=full|Ensembl REST API example}
 	    @example
@@ -159,9 +160,11 @@ eRest.call ( url     : eRest.url.gene ({ id : "ENSG00000139618" }),
 	   );
 	 */
     url_api.method ('gene', function(obj) {
-	return prefix_ensgene +
-	    obj.id +
-	    ".json?format=full";
+	var url = prefix_ensgene + obj.id + ".json?format=full";
+	if (obj.expand && obj.expand === 1) {
+	    url = url + "&expand=1";
+	}
+	return url;
     });
 
 	/** eRest.url.<strong>chr_info</strong> returns the ensembl REST url to retrieve the information associated with the chromosome (seq_region in Ensembl nomenclature).
