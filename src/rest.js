@@ -1,5 +1,9 @@
 var http = require("httpplease");
 var apijs = require("tnt.api");
+var promises = require('httpplease-promises');
+var Promise = require('es6-promise').Promise;
+var json = require("httpplease/plugins/json");
+http = http.use(json).use(promises(Promise));
 
 tnt_eRest = function() {
 
@@ -50,31 +54,27 @@ tnt_eRest = function() {
 	<li>error => A callback to be called when the REST query returns an error
 	</ul>
     */
-    api.method ('call', function (obj) {
-	var url = obj.url;
-	var on_success = obj.success;
-	var on_error   = obj.error;
-	connections++;
-	http.get({
-	    "url" : url
-	}, function (error, resp) {
-	    if (resp !== undefined && error == null && on_success !== undefined) {
-		on_success(JSON.parse(resp.body));
-	    }
-	    if (error !== null && on_error !== undefined) {
-		on_error(error);
-	    }
+    api.method ('call', function (myurl) {
+	return http.get({
+	    "url": myurl
 	});
-	// d3.json (url, function (error, resp) {
-	//     connections--;
-	//     if (resp !== undefined && error === null && on_success !== undefined) {
-	// 	on_success(resp);
-	//     }
-	//     if (error !== null && on_error !== undefined) {
-	// 	on_error(error);
-	//     }
-	// });
     });
+    // api.method ('call', function (obj) {
+    // 	var url = obj.url;
+    // 	var on_success = obj.success;
+    // 	var on_error   = obj.error;
+    // 	connections++;
+    // 	http.get({
+    // 	    "url" : url
+    // 	}, function (error, resp) {
+    // 	    if (resp !== undefined && error == null && on_success !== undefined) {
+    // 		on_success(JSON.parse(resp.body));
+    // 	    }
+    // 	    if (error !== null && on_error !== undefined) {
+    // 		on_error(error);
+    // 	    }
+    // 	});
+    // });
 
 
     eRest.url = {};
