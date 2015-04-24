@@ -28,7 +28,7 @@ describe('TnT REST', function () {
 	    var name = "BRCA2"
 	    var xref_url = rest.url.xref({species:"human", name:name});
 	    it("Has the correct url", function () {
-		assert.equal(xref_url, "http://rest.ensembl.org/xrefs/symbol/human/BRCA2.json?object_type=gene");
+		assert.equal(xref_url, "https://rest.ensembl.org/xrefs/symbol/human/BRCA2.json?object_type=gene");
 	    })
 	    it("Retrieves xrefs from the REST server", function (done) {
 		rest.call (xref_url)
@@ -102,7 +102,7 @@ describe('TnT REST', function () {
 	    })
 	    var chr_info_url = rest.url.chr_info({species:"human", chr:"13"});
 	    it ("Has the correct url", function () {
-		assert.equal(chr_info_url, "http://rest.ensembl.org/info/assembly/human/13.json?format=full");
+		assert.equal(chr_info_url, "https://rest.ensembl.org/info/assembly/human/13.json?format=full");
 	    })
 	    it ("Retrieves chr info", function (done) {
 		rest.call (chr_info_url)
@@ -130,7 +130,7 @@ describe('TnT REST', function () {
 		species_set : ['human', 'mouse']
 	    });
 	    it ("Has the correct url", function () {
-		assert.equal(aln_block_url, "http://rest.ensembl.org/alignment/region/homo_sapiens/2:100040000-100041500.json?method=LASTZ_NET&species_set=human&species_set=mouse");
+		assert.equal(aln_block_url, "https://rest.ensembl.org/alignment/region/homo_sapiens/2:100040000-100041500.json?method=LASTZ_NET&species_set=human&species_set=mouse");
 	    });
 	    it("Retrieves genomic align blocks", function (done) {
 	    	rest.call (aln_block_url)
@@ -173,7 +173,7 @@ describe('TnT REST', function () {
 	    });
 
 	    it("Has the correct url", function () {
-		assert.equal(gene_tree_url, "http://rest.ensembl.org/genetree/id/ENSGT00390000003602.json?sequence=none");
+		assert.equal(gene_tree_url, "https://rest.ensembl.org/genetree/id/ENSGT00390000003602.json?sequence=none");
 	    });
 
 	    it("Retrieves gene trees", function (done) {
@@ -256,7 +256,7 @@ describe('TnT REST', function () {
 	    })
 	    var gene_url = rest.url.gene({id:"ENSG00000139618"});
 	    it("Has the correct url", function () {
-		assert.equal(gene_url, "http://rest.ensembl.org/lookup/id/ENSG00000139618.json?format=full")
+		assert.equal(gene_url, "https://rest.ensembl.org/lookup/id/ENSG00000139618.json?format=full")
 	    })
 	    it("Retrieves gene from ensembl ID", function (done) {
 		rest.call (gene_url)
@@ -298,7 +298,7 @@ describe('TnT REST', function () {
 	    })
 	    var homologues_url = rest.url.homologues({id:"ENSG00000139618"});
 	    it("Has the correct url", function () {
-		assert.equal(homologues_url, "http://rest.ensembl.org/homology/id/ENSG00000139618.json?format=condensed;sequence=none;type=all");
+		assert.equal(homologues_url, "https://rest.ensembl.org/homology/id/ENSG00000139618.json?format=condensed;sequence=none;type=all");
 	    })
 	    it("Retrieves homologues", function (done) {
 		rest.call (homologues_url)
@@ -333,7 +333,7 @@ describe('TnT REST', function () {
 					      "to"      : 32973805
 					     });
 	    it ("Has the correct url", function () {
-		assert.equal(region_url, "http://rest.ensembl.org/overlap/region/homo_sapiens/13:32889611-32973805.json?feature=gene");
+		assert.equal(region_url, "https://rest.ensembl.org/overlap/region/homo_sapiens/13:32889611-32973805.json?feature=gene");
 	    })
 	    it("Retrieves regions correctly", function (done) {
 		rest.call (region_url)

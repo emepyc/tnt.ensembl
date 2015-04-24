@@ -9,7 +9,7 @@ tnt_eRest = function() {
 
     // Prefixes to use the REST API.
     // These are modified in the localREST setter
-    var prefix = "http://rest.ensembl.org";
+    var prefix = "https://rest.ensembl.org";
     var prefix_region = prefix + "/overlap/region/";
     var prefix_ensgene = prefix + "/lookup/id/";
     var prefix_xref = prefix + "/xrefs/symbol/";
