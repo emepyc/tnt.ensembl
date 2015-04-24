@@ -1,6 +1,6 @@
 {
   "name": "tnt.ensembl",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Library to retrieve data via the Ensembl REST Api",
   "main": "index.js",
   "directories": {
