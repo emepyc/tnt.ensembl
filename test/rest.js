@@ -163,6 +163,36 @@ describe('TnT REST', function () {
 	    // 		});
 	});	    
 
+	describe('Ensembl sequences', function () {
+	    it ("Has a url.sequence field", function () {
+		assert.isDefined (rest.url.sequence);
+	    });
+
+	    var sequence_url = rest.url.sequence({
+		species: "human",
+		chr : '7',
+		from : 1233000,
+		to : 1234000
+	    });
+
+	    it ("Has the correct url", function () {
+		assert.equal(sequence_url, "https://rest.ensembl.org/sequence/region/human/7:1233000..1234000?content-type=application/json");
+	    });
+
+	    it ("Retrieves sequences", function (done) {
+		rest.call (sequence_url)
+		    .then (function (resp) {
+			assert.isObject(resp.body);
+			assert.isDefined(resp.body.id);
+			assert.isDefined(resp.body.seq);
+			assert.lengthOf(resp.body.seq, 1001); // Both ends are included
+			assert.isDefined(resp.body.molecule);
+			assert.equal(resp.body.molecule, 'dna');
+			setTimeout(done, delay);
+		    });
+	    });
+	});
+	
 	describe('Ensembl GeneTrees', function () {
 	    it("Has a url.gene_tree field", function () {
 		assert.isDefined(rest.url.gene_tree);

@@ -18,6 +18,7 @@ tnt_eRest = function() {
     var prefix_aln_region = prefix + "/alignment/region/";
     var prefix_gene_tree = prefix + "/genetree/id/";
     var prefix_assembly = prefix + "/info/assembly/";
+    var prefix_sequence = prefix + "/sequence/region/";
 
     // Number of connections made to the database
     var connections = 0;
@@ -209,6 +210,18 @@ eRest.call ( url     : eRest.url.chr_info ({ species : "homo_sapiens", chr : "13
 	return url;
     });
 
+    url_api.method ('sequence', function (obj) {
+	return prefix_sequence +
+	    obj.species +
+	    '/' +
+	    obj.chr +
+	    ':' +
+	    obj.from +
+	    '..' +
+	    obj.to +
+	    '?content-type=application/json';
+    });
+    
     url_api.method ('gene_tree', function (obj) {
 	return prefix_gene_tree +
 	    obj.id + 
