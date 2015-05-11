@@ -19,6 +19,7 @@ tnt_eRest = function() {
     var prefix_gene_tree = prefix + "/genetree/id/";
     var prefix_assembly = prefix + "/info/assembly/";
     var prefix_sequence = prefix + "/sequence/region/";
+    var prefix_variation = prefix + "/variation/";
 
     // Number of connections made to the database
     var connections = 0;
@@ -55,7 +56,13 @@ tnt_eRest = function() {
 	<li>error => A callback to be called when the REST query returns an error
 	</ul>
     */
-    api.method ('call', function (myurl) {
+    api.method ('call', function (myurl, data) {
+	if (data) {
+	    return http.post({
+		"url": myurl,
+		"body" : data
+	    })
+	}
 	return http.get({
 	    "url": myurl
 	});
@@ -220,6 +227,12 @@ eRest.call ( url     : eRest.url.chr_info ({ species : "homo_sapiens", chr : "13
 	    '..' +
 	    obj.to +
 	    '?content-type=application/json';
+    });
+
+    url_api.method ('variation', function (obj) {
+	// For now, only post requests are included
+	return prefix_variation +
+	    obj.species;
     });
     
     url_api.method ('gene_tree', function (obj) {

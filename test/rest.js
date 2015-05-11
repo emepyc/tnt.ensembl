@@ -18,6 +18,23 @@ describe('TnT REST', function () {
 	assert.isDefined(rest.url)
     })
 
+    describe('Ensembl Variation (Post)', function () {
+	it ('Makes post requests to get variation data', function (done) {
+	    var var_url = rest.url.variation({
+		"species" : "homo_sapiens",
+	    });
+	    rest.call(var_url, {
+		"ids" : ["rs116035550", "COSM476" ]
+	    })
+		.then (function (resp) {
+		    assert.isDefined (resp.body);
+		    assert.isDefined (resp.body["COSM476"]);
+		    assert.isDefined (resp.body["rs116035550"]);
+		    done();
+		});
+	});
+    });
+    
     describe('Data retrieval', function () {
 	// Being friendly with the REST API. The tests are delayed this time
 	var delay = 300;
@@ -347,8 +364,8 @@ describe('TnT REST', function () {
 			assert.equal(ids.length, resp.body.data[0].homologies.length);
 			_.each(ids, function (el) {
 			    assert.isDefined(el);
-			})
-			    setTimeout(done, delay);
+			});
+			setTimeout(done, delay);
 		    })
 	    })
 	})
@@ -390,6 +407,9 @@ describe('TnT REST', function () {
 	    		     })
 	    	//assert.isTrue(rest.connections() > 0);
 	    })
-	})
-    })
-})
+	});
+
+    });
+    
+
+});
