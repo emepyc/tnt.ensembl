@@ -1,2 +1,4 @@
 0.0.2
 	- Added the sequence url (+ tests)
+0.0.3
+        - Added POST support (optional data as argument to "call" method) and the variation (post) url endpoint
