@@ -29,23 +29,22 @@ tnt_eRest = function() {
 
     // Limits imposed by the ensembl REST API
     eRest.limits = {
-	region : 5000000
+        region : 5000000
     };
 
     var api = apijs (eRest);
-
 
     /** <strong>localREST</strong> points the queries to a local REST service to debug.
 	TODO: This method should be removed in "production"
     */
     api.method ('localREST', function() {
-	prefix = "http://127.0.0.1:3000";
-	prefix_region = prefix + "/overlap/region/";
-	prefix_ensgene = prefix + "/lookup/id/";
-	prefix_xref = prefix + "/xrefs/symbol/";
-	prefix_homologues = prefix + "/homology/id/";
+        prefix = "http://127.0.0.1:3000";
+        prefix_region = prefix + "/overlap/region/";
+        prefix_ensgene = prefix + "/lookup/id/";
+        prefix_xref = prefix + "/xrefs/symbol/";
+        prefix_homologues = prefix + "/homology/id/";
 
-	return eRest;
+        return eRest;
     });
 
     /** <strong>call</strong> makes an asynchronous call to the ensembl REST service.
@@ -102,16 +101,22 @@ eRest.call ( url     : eRest.url.region ({ species : "homo_sapiens", chr : "13",
              error   : callback
 	   );
 	 */
-    url_api.method ('region', function(obj) {
-	return prefix_region +
-	    obj.species +
-	    "/" +
-	    obj.chr +
-	    ":" + 
-	    obj.from + 
-	    "-" + obj.to + 
-	    ".json?feature=gene";
-    });
+     url_api.method ('region', function(obj) {
+         var features = obj.features || ["gene"];
+         var feature_options = features.map (function (d) {
+             return "feature=" + d;
+         });
+         var feature_options_url = feature_options.join("&");
+         return prefix_region +
+         obj.species +
+         "/" +
+         obj.chr +
+         ":" +
+         obj.from +
+         "-" + obj.to +
+         //".json?feature=gene";
+         ".json?" + feature_options_url;
+     });
 
 	/** eRest.url.<strong>species_gene</strong> returns the ensembl REST url to retrieve the ensembl gene associated with
 	    the given name in the specified species.
@@ -149,7 +154,7 @@ eRest.call ( url     : eRest.url.homologues ({ id : "ENSG00000139618" }),
 	 */
     url_api.method ('homologues', function(obj) {
 	return prefix_homologues +
-	    obj.id + 
+	    obj.id +
 	    ".json?format=condensed;sequence=none;type=all";
     });
 
@@ -199,7 +204,7 @@ eRest.call ( url     : eRest.url.chr_info ({ species : "homo_sapiens", chr : "13
 	// TODO: For now, it only works with species_set and not species_set_groups
 	// Should be extended for wider use
     url_api.method ('aln_block', function (obj) {
-	var url = prefix_aln_region + 
+	var url = prefix_aln_region +
 	    obj.species +
 	    "/" +
 	    obj.chr +
@@ -234,17 +239,17 @@ eRest.call ( url     : eRest.url.chr_info ({ species : "homo_sapiens", chr : "13
 	return prefix_variation +
 	    obj.species;
     });
-    
+
     url_api.method ('gene_tree', function (obj) {
 	return prefix_gene_tree +
-	    obj.id + 
+	    obj.id +
 	    ".json?sequence=" +
 	    ((obj.sequence || obj.aligned) ? 1 : "none") +
 	    (obj.aligned ? '&aligned=1' : '');
     });
 
     url_api.method('assembly', function (obj) {
-	return prefix_assembly + 
+	return prefix_assembly +
 	    obj.species +
 	    ".json";
     });
