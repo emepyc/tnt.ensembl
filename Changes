@@ -2,3 +2,7 @@
 	- Added the sequence url (+ tests)
 0.0.3
         - Added POST support (optional data as argument to "call" method) and the variation (post) url endpoint
+0.0.4
+	- Added -feature- option to region endpoint
+0.0.5
+	- Added proxyUrl method

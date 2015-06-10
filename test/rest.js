@@ -7,16 +7,25 @@ describe('TnT REST', function () {
 
     it("Exists and is called eRest", function () {
         assert.isDefined(tnt_ensembl);
-    })
+    });
     var rest = tnt_ensembl();
     it("Has a region limit", function () {
         assert.isDefined(rest.limits);
         assert.isDefined(rest.limits.region);
-    })
+    });
 
     it("Has a url submodule", function () {
         assert.isDefined(rest.url)
-    })
+    });
+
+    it("Has a proxyUrl method", function () {
+        assert.isDefined(rest.proxyUrl);
+        assert.isFunction(rest.proxyUrl);
+    });
+
+    it("Has the ensembl rest api as the default proxyUrl", function () {
+        assert.strictEqual(rest.proxyUrl(), "https://rest.ensembl.org");
+    });
 
     describe('Ensembl Variation (Post)', function () {
         it ('Makes post requests to get variation data', function (done) {

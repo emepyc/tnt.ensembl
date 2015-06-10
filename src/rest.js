@@ -7,19 +7,21 @@ http = http.use(json).use(promises(Promise));
 
 tnt_eRest = function() {
 
+    var config = {
+        proxyUrl : "https://rest.ensembl.org"
+    };
     // Prefixes to use the REST API.
-    // These are modified in the localREST setter
-    var prefix = "https://rest.ensembl.org";
-    var prefix_region = prefix + "/overlap/region/";
-    var prefix_ensgene = prefix + "/lookup/id/";
-    var prefix_xref = prefix + "/xrefs/symbol/";
-    var prefix_homologues = prefix + "/homology/id/";
-    var prefix_chr_info = prefix + "/info/assembly/";
-    var prefix_aln_region = prefix + "/alignment/region/";
-    var prefix_gene_tree = prefix + "/genetree/id/";
-    var prefix_assembly = prefix + "/info/assembly/";
-    var prefix_sequence = prefix + "/sequence/region/";
-    var prefix_variation = prefix + "/variation/";
+    //var proxyUrl = "https://rest.ensembl.org";
+    //var prefix_region = prefix + "/overlap/region/";
+    //var prefix_ensgene = prefix + "/lookup/id/";
+    //var prefix_xref = prefix + "/xrefs/symbol/";
+    //var prefix_homologues = prefix + "/homology/id/";
+    //var prefix_chr_info = prefix + "/info/assembly/";
+    //var prefix_aln_region = prefix + "/alignment/region/";
+    //var prefix_gene_tree = prefix + "/genetree/id/";
+    //var prefix_assembly = prefix + "/info/assembly/";
+    //var prefix_sequence = prefix + "/sequence/region/";
+    //var prefix_variation = prefix + "/variation/";
 
     // Number of connections made to the database
     var connections = 0;
@@ -34,18 +36,7 @@ tnt_eRest = function() {
 
     var api = apijs (eRest);
 
-    /** <strong>localREST</strong> points the queries to a local REST service to debug.
-	TODO: This method should be removed in "production"
-    */
-    api.method ('localREST', function() {
-        prefix = "http://127.0.0.1:3000";
-        prefix_region = prefix + "/overlap/region/";
-        prefix_ensgene = prefix + "/lookup/id/";
-        prefix_xref = prefix + "/xrefs/symbol/";
-        prefix_homologues = prefix + "/homology/id/";
-
-        return eRest;
-    });
+    api.getset (config);
 
     /** <strong>call</strong> makes an asynchronous call to the ensembl REST service.
 	@param {Object} object - A literal object containing the following fields:
@@ -102,12 +93,13 @@ eRest.call ( url     : eRest.url.region ({ species : "homo_sapiens", chr : "13",
 	   );
 	 */
      url_api.method ('region', function(obj) {
+         var prefix_region = "/overlap/region/";
          var features = obj.features || ["gene"];
          var feature_options = features.map (function (d) {
              return "feature=" + d;
          });
          var feature_options_url = feature_options.join("&");
-         return prefix_region +
+         return config.proxyUrl + prefix_region +
          obj.species +
          "/" +
          obj.chr +
@@ -133,11 +125,12 @@ eRest.call ( url     : eRest.url.species_gene ({ species : "human", gene_name : 
 	   );
 	 */
     url_api.method ('xref', function (obj) {
-	return prefix_xref +
-	    obj.species  +
-	    "/" +
-	    obj.name +
-	    ".json?object_type=gene";
+        var prefix_xref = "/xrefs/symbol/";
+        return config.proxyUrl + prefix_xref +
+            obj.species  +
+            "/" +
+            obj.name +
+            ".json?object_type=gene";
     });
 
 	/** eRest.url.<strong>homologues</strong> returns the ensembl REST url to retrieve the homologues (orthologues + paralogues) of the given ensembl ID.
@@ -153,9 +146,10 @@ eRest.call ( url     : eRest.url.homologues ({ id : "ENSG00000139618" }),
 	   );
 	 */
     url_api.method ('homologues', function(obj) {
-	return prefix_homologues +
-	    obj.id +
-	    ".json?format=condensed;sequence=none;type=all";
+        var prefix_homologues = "/homology/id/";
+        return config.proxyUrl + prefix_homologues +
+            obj.id +
+            ".json?format=condensed;sequence=none;type=all";
     });
 
 	/** eRest.url.<strong>gene</strong> returns the ensembl REST url to retrieve the ensembl gene associated with
@@ -173,11 +167,12 @@ eRest.call ( url     : eRest.url.gene ({ id : "ENSG00000139618" }),
 	   );
 	 */
     url_api.method ('gene', function(obj) {
-	var url = prefix_ensgene + obj.id + ".json?format=full";
-	if (obj.expand && obj.expand === 1) {
-	    url = url + "&expand=1";
-	}
-	return url;
+        var prefix_ensgene = "/lookup/id/";
+        var url = config.proxyUrl + prefix_ensgene + obj.id + ".json?format=full";
+        if (obj.expand && obj.expand === 1) {
+            url = url + "&expand=1";
+        }
+        return url;
     });
 
 	/** eRest.url.<strong>chr_info</strong> returns the ensembl REST url to retrieve the information associated with the chromosome (seq_region in Ensembl nomenclature).
@@ -194,65 +189,71 @@ eRest.call ( url     : eRest.url.chr_info ({ species : "homo_sapiens", chr : "13
 	   );
 	 */
     url_api.method ('chr_info', function(obj) {
-	return prefix_chr_info +
-	    obj.species +
-	    "/" +
-	    obj.chr +
-	    ".json?format=full";
+        var prefix_chr_info = "/info/assembly/";
+        return config.proxyUrl + prefix_chr_info +
+            obj.species +
+            "/" +
+            obj.chr +
+            ".json?format=full";
     });
 
 	// TODO: For now, it only works with species_set and not species_set_groups
 	// Should be extended for wider use
     url_api.method ('aln_block', function (obj) {
-	var url = prefix_aln_region +
-	    obj.species +
-	    "/" +
-	    obj.chr +
-	    ":" +
-	    obj.from +
-	    "-" +
-	    obj.to +
-	    ".json?method=" +
-	    obj.method;
+        var prefix_aln_region = "/alignment/region/";
+        var url = config.proxyUrl + prefix_aln_region +
+            obj.species +
+            "/" +
+            obj.chr +
+            ":" +
+            obj.from +
+            "-" +
+            obj.to +
+            ".json?method=" +
+            obj.method;
 
-	for (var i=0; i<obj.species_set.length; i++) {
-	    url += "&species_set=" + obj.species_set[i];
-	}
+        for (var i=0; i<obj.species_set.length; i++) {
+            url += "&species_set=" + obj.species_set[i];
+        }
 
-	return url;
+        return url;
     });
 
     url_api.method ('sequence', function (obj) {
-	return prefix_sequence +
-	    obj.species +
-	    '/' +
-	    obj.chr +
-	    ':' +
-	    obj.from +
-	    '..' +
-	    obj.to +
-	    '?content-type=application/json';
+        var prefix_sequence = "/sequence/region/";
+        return config.proxyUrl + prefix_sequence +
+            obj.species +
+            '/' +
+            obj.chr +
+            ':' +
+            obj.from +
+            '..' +
+            obj.to +
+            '?content-type=application/json';
     });
 
     url_api.method ('variation', function (obj) {
 	// For now, only post requests are included
-	return prefix_variation +
-	    obj.species;
-    });
+        var prefix_variation = "/variation/";
+        return config.proxyUrl + prefix_variation +
+            obj.species;
+        });
 
     url_api.method ('gene_tree', function (obj) {
-	return prefix_gene_tree +
-	    obj.id +
-	    ".json?sequence=" +
-	    ((obj.sequence || obj.aligned) ? 1 : "none") +
-	    (obj.aligned ? '&aligned=1' : '');
+        var prefix_gene_tree = "/genetree/id/";
+        return config.proxyUrl + prefix_gene_tree +
+            obj.id +
+            ".json?sequence=" +
+            ((obj.sequence || obj.aligned) ? 1 : "none") +
+            (obj.aligned ? '&aligned=1' : '');
     });
 
     url_api.method('assembly', function (obj) {
-	return prefix_assembly +
-	    obj.species +
-	    ".json";
-    });
+        var prefix_assembly = "/info/assembly/";
+        return config.proxyUrl + prefix_assembly +
+            obj.species +
+            ".json";
+        });
 
 
     api.method ('connections', function() {
