@@ -147,6 +147,7 @@ eRest.call ( url     : eRest.url.homologues ({ id : "ENSG00000139618" }),
 	 */
     url_api.method ('homologues', function(obj) {
         var prefix_homologues = "/homology/id/";
+        var format = obj.format || "condensed";
         var target_species = "";
         if (obj.target_species && obj.target_species.length) {
             target_species = obj.target_species.map(function (d) {
@@ -157,13 +158,13 @@ eRest.call ( url     : eRest.url.homologues ({ id : "ENSG00000139618" }),
         var target_taxons = "";
         if (obj.target_taxons && obj.target_taxons.length ) {
             target_taxons = obj.target_taxons.map(function (d) {
-                return "target_taxons=" + d;
+                return "target_taxon=" + d;
             }).join(";");
         }
 
         var url = config.proxyUrl + prefix_homologues +
             obj.id +
-            ".json?format=condensed;sequence=none;type=all";
+            ".json?format=" + format + ";sequence=none;type=all";
 
         if (target_species) {
             url += ";" + target_species;

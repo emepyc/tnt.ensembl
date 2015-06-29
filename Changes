@@ -12,3 +12,6 @@
 	- Bugfix: using member_id when present in homologues endpoint
 0.0.8
 	- Added member id option to gene tree endpoint
+0.0.9
+	- bugfix: fixed 'target_taxon' option in homologues endpoint
+	- added format (condensed / full) option in homologues endpoint
