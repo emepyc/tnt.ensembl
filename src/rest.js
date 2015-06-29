@@ -146,11 +146,33 @@ eRest.call ( url     : eRest.url.homologues ({ id : "ENSG00000139618" }),
 	   );
 	 */
     url_api.method ('homologues', function(obj) {
-        var prefix_homologues = obj.member_id === undefined ? "/homology/id/" : "/homology/member/id/";
-        var id = obj.member_id || obj.id;
-        return config.proxyUrl + prefix_homologues +
-            id +
+        var prefix_homologues = "/homology/id/";
+        var target_species = "";
+        if (obj.target_species && obj.target_species.length) {
+            target_species = obj.target_species.map(function (d) {
+                    return "target_species=" + d;
+                }).join(";");
+        }
+
+        var target_taxons = "";
+        if (obj.target_taxons && obj.target_taxons.length ) {
+            target_taxons = obj.target_taxons.map(function (d) {
+                return "target_taxons=" + d;
+            }).join(";");
+        }
+
+        var url = config.proxyUrl + prefix_homologues +
+            obj.id +
             ".json?format=condensed;sequence=none;type=all";
+
+        if (target_species) {
+            url += ";" + target_species;
+        }
+        if (target_taxons) {
+            url += ";"+ target_taxons;
+        }
+
+        return url;
     });
 
 	/** eRest.url.<strong>gene</strong> returns the ensembl REST url to retrieve the ensembl gene associated with
@@ -241,12 +263,27 @@ eRest.call ( url     : eRest.url.chr_info ({ species : "homo_sapiens", chr : "13
         });
 
     url_api.method ('gene_tree', function (obj) {
-        var prefix_gene_tree = "/genetree/id/";
-        return config.proxyUrl + prefix_gene_tree +
-            obj.id +
-            ".json?sequence=" +
-            ((obj.sequence || obj.aligned) ? 1 : "none") +
-            (obj.aligned ? '&aligned=1' : '');
+        var prefix_genetree = obj.member_id === undefined ? "/genetree/id/" : "/genetree/member/id/";
+        var id = obj.member_id || obj.id;
+        var sequence = obj.sequence ? obj.sequence : "protein";
+        var aligned = obj.aligned ? 1 : 0;
+
+        var species = obj.species;
+        var species_opt = "";
+        if (species && species.length) {
+            species_opt = species.map(function (d) {
+                    return "species=" + d;
+                }).join(";");
+        }
+        var url = config.proxyUrl + prefix_genetree +
+            id +
+            ".json?sequence=" + sequence + ";aligned=" + aligned;
+
+        if (species_opt) {
+            url += ";" + species_opt;
+        }
+
+        return url;
     });
 
     url_api.method('assembly', function (obj) {

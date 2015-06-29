@@ -229,7 +229,7 @@ describe('TnT REST', function () {
             });
 
             it("Has the correct url", function () {
-                assert.equal(gene_tree_url, "https://rest.ensembl.org/genetree/id/ENSGT00390000003602.json?sequence=none");
+                assert.equal(gene_tree_url, "https://rest.ensembl.org/genetree/id/ENSGT00390000003602.json?sequence=protein;aligned=0");
             });
 
             it("Retrieves gene trees", function (done) {
@@ -241,7 +241,29 @@ describe('TnT REST', function () {
                 });
             });
 
-            it("Doesn't retrieve aligned sequences by default", function (done) {
+            it("Retrieves protein sequences by default", function (done) {
+                rest.call (gene_tree_url)
+                .then (function (resp) {
+                    var check_seq = function (node) {
+                        if (node.children === undefined) {
+                            assert.isDefined(node.sequence);
+                            assert.isDefined(node.sequence.mol_seq);
+                        } else {
+                            for (var i=0; i<node.children.length; i++) {
+                                check_seq(node.children[i]);
+                            }
+                        }
+                    };
+                    check_seq(resp.body.tree);
+                    setTimeout(done, delay);
+                });
+            });
+
+            it("Does not retrieve sequences when passed sequence=none", function (done) {
+                var gene_tree_url = rest.url.gene_tree({
+                    id : "ENSGT00390000003602",
+                    sequence : "none"
+                });
                 rest.call (gene_tree_url)
                 .then (function (resp) {
                     var check_seq = function (node) {
@@ -253,7 +275,7 @@ describe('TnT REST', function () {
                                 check_seq(node.children[i]);
                             }
                         }
-                    }
+                    };
                     check_seq(resp.body.tree);
                     setTimeout(done, delay);
                 });
@@ -262,7 +284,7 @@ describe('TnT REST', function () {
             it("Retrieves un-aligned sequences when sequence flag is passed", function (done) {
                 var gene_tree_url = rest.url.gene_tree ({
                     id : "ENSGT00390000003602",
-                    sequence : 1
+                    sequence : "protein"
                 });
                 rest.call (gene_tree_url)
                 .then (function (resp) {
@@ -351,11 +373,17 @@ describe('TnT REST', function () {
         describe('Gene Homologues', function () {
             it("Has a url.homologues field", function () {
                 assert.isDefined(rest.url.homologues);
-            })
+            });
             var homologues_url = rest.url.homologues({id:"ENSG00000139618"});
             it("Has the correct url", function () {
                 assert.equal(homologues_url, "https://rest.ensembl.org/homology/id/ENSG00000139618.json?format=condensed;sequence=none;type=all");
-            })
+            });
+            it ("Has the species option", function () {
+                var url = rest.url.homologues({
+                    "id" : "ENSG00000139618",
+                    "species" : ["human", "mouse"]
+                });
+            });
             it("Retrieves homologues", function (done) {
                 rest.call (homologues_url)
                 .then (function (resp) {

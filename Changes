@@ -10,3 +10,5 @@
 	- Added member id option in homologues endpoint
 0.0.7
 	- Bugfix: using member_id when present in homologues endpoint
+0.0.8
+	- Added member id option to gene tree endpoint
