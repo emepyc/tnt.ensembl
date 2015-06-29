@@ -6,3 +6,5 @@
 	- Added -feature- option to region endpoint
 0.0.5
 	- Added proxyUrl method
+0.0.6
+	- Added member id option in homologues endpoint
