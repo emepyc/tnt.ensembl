@@ -8,3 +8,5 @@
 	- Added proxyUrl method
 0.0.6
 	- Added member id option in homologues endpoint
+0.0.7
+	- Bugfix: using member_id when present in homologues endpoint

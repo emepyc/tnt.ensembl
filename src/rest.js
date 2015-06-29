@@ -147,8 +147,9 @@ eRest.call ( url     : eRest.url.homologues ({ id : "ENSG00000139618" }),
 	 */
     url_api.method ('homologues', function(obj) {
         var prefix_homologues = obj.member_id === undefined ? "/homology/id/" : "/homology/member/id/";
+        var id = obj.member_id || obj.id;
         return config.proxyUrl + prefix_homologues +
-            obj.id +
+            id +
             ".json?format=condensed;sequence=none;type=all";
     });
 
