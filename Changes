@@ -15,3 +15,5 @@
 0.0.9
 	- bugfix: fixed 'target_taxon' option in homologues endpoint
 	- added format (condensed / full) option in homologues endpoint
+0.0.10
+	- Updated dependencies
