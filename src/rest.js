@@ -47,16 +47,77 @@ tnt_eRest = function() {
 	</ul>
     */
     api.method ('call', function (myurl, data) {
-	if (data) {
-	    return http.post({
-		"url": myurl,
-		"body" : data
-	    })
-	}
-	return http.get({
-	    "url": myurl
-	});
+        if (data) {
+            return http.post({
+                "url": myurl,
+                "body" : data
+            });
+        }
+        return http.get({
+            "url": myurl
+        });
     });
+
+    api.method ('region2genes', function (elems) {
+        var geneTranscripts = {};
+        var genes = [];
+        var transcripts = {};
+
+        // transcripts
+        for (var i=0; i<elems.length; i++) {
+            var e = elems[i];
+            if (e.feature_type == "transcript") {
+                e.display_name = e.external_name;
+                transcripts[e.id] = e;
+                if (geneTranscripts[e.Parent] === undefined) {
+                    geneTranscripts[e.Parent] = [];
+                }
+                geneTranscripts[e.Parent].push(e);
+            }
+        }
+
+        // exons
+        for (var j=0; j<elems.length; j++) {
+            var e = elems[j];
+            if (e.feature_type === "exon") {
+                var t = transcripts[e.Parent];
+                if (t.Exon === undefined) {
+                    t.Exon = [];
+                }
+                t.Exon.push(e);
+            }
+        }
+
+        // cds
+        for (var k=0; k<elems.length; k++) {
+            var e = elems[k];
+            if (e.feature_type === "cds") {
+                var t = transcripts[e.Parent];
+                if (t.Translation === undefined) {
+                    t.Translation = e;
+                }
+                if (e.start < t.Translation.start) {
+                    t.Translation.start = e.start;
+                }
+                if (e.end > t.Translation.end) {
+                    t.Translation.end = e.end;
+                }
+            }
+        }
+
+        // genes
+        for (var h=0; h<elems.length; h++) {
+            var e = elems[h];
+            if (e.feature_type === "gene") {
+                e.display_name = e.external_name;
+                e.Transcript = geneTranscripts[e.id];
+                genes.push(e);
+            }
+        }
+
+        return genes;
+    });
+
     // api.method ('call', function (obj) {
     // 	var url = obj.url;
     // 	var on_success = obj.success;
@@ -193,7 +254,7 @@ eRest.call ( url     : eRest.url.gene ({ id : "ENSG00000139618" }),
     url_api.method ('gene', function(obj) {
         var prefix_ensgene = "/lookup/id/";
         var url = config.proxyUrl + prefix_ensgene + obj.id + ".json?format=full";
-        if (obj.expand && obj.expand === 1) {
+        if (obj.expand) {
             url = url + "&expand=1";
         }
         return url;

@@ -17,3 +17,5 @@
 	- added format (condensed / full) option in homologues endpoint
 0.0.10
 	- Updated dependencies
+0.0.12
+	- Added region2genes method
