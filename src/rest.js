@@ -334,8 +334,8 @@ eRest.call ( url     : eRest.url.chr_info ({ species : "homo_sapiens", chr : "13
         var species_opt = "";
         if (species && species.length) {
             species_opt = species.map(function (d) {
-                    return "species=" + d;
-                }).join(";");
+                return "prune_species=" + d;
+            }).join(";");
         }
         var url = config.proxyUrl + prefix_genetree +
             id +

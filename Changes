@@ -19,3 +19,5 @@
 	- Updated dependencies
 0.0.12
 	- Added region2genes method
+0.0.13
+	- Added support for prune_species in gene tree endpoing
